@@ -12,7 +12,7 @@ Config.AllowedJobs = {
 
 Config.AllowCommand = true
 Config.AllowKeyboardTrigger = true
-Config.DefaultKey = "ü"
+Config.DefaultKey = "Z"
 Config.PanicCommand = 'panic'
 Config.ShowNotification = true
 

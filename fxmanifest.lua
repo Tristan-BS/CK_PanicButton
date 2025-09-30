@@ -8,7 +8,7 @@ lua54 'yes'
 
 shared_scripts {
     'locales/de.lua',
-    'locales/en.lua'
+    'locales/en.lua',
     'config.lua'
 }
 
@@ -21,7 +21,7 @@ server_scripts {
 }
 
 files {
-    '/sounds/panic.wav'
+    '/sounds/panicsound.wav'
 }
 
 -- Can play sound
