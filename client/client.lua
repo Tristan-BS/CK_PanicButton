@@ -19,7 +19,7 @@ end
 if Config.AllowKeyboardTrigger then
     RegisterKeyMapping(
         "ck_panic",                 -- Intern name
-        "CK Panic Button",          -- Description in Keybindings
+        "Trigger Panicbutton",      -- Description in Keybindings
         "keyboard",                 -- Input device
         Config.Keys.TriggerPanic    -- Defaultkey
     )
@@ -27,6 +27,20 @@ if Config.AllowKeyboardTrigger then
     RegisterCommand("ck_panic", function()
         TriggerEvent("CK_PanicButton:trigger")
     end, false)
+
+    RegisterKeyMapping(
+        "ck_accept_gps",
+        "Accept GPS to Panicbutton",
+        "keyboard",
+        Config.Keys.AcceptGPS
+    )
+
+    RegisterKeyMapping(
+        "ck_decline_gps",
+        "Decline GPS to Panicbutton",
+        "keyboard",
+        Config.Keys.DeclineGPS
+    )
 end
 
 -- Local event
