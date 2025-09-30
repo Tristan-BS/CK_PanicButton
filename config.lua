@@ -23,13 +23,14 @@ KeyMap = {
 }
 
 -- Sound (0.0 min - 1.0 = max)
-Config.SoundVolume = 0.8
+Config.SoundVolume = 0.3
 Config.Notification = "esx" -- or custom ( CHANGE AT client/notify.lua )
 
 -- Jobs which can use PanicButton
 Config.AllowedJobs = {
     "police",
-    "sheriff"
+    "sheriff",
+    "ambulance"
 }
 
 Config.AllowCommand = true
@@ -55,8 +56,8 @@ Config.Blip = {
     Color = 1,              -- red
     GPSSprite = 161,        -- GPS Blip
     GPSScale = 0.4,         -- GPS scale
-    AcceptGPSTime = 10,     -- seconds which can a player accept the GPS 
-    Time = 30,              -- seconds
+    AcceptGPSTime = 15,     -- seconds which can a player accept the GPS 
+    Time = 45,              -- seconds
     PulseSpeed = 150,       -- ms
     FlashInterval = 200     -- ms
 }

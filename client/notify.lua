@@ -11,15 +11,8 @@ end
 function ShowPanicNotification(msg)
     if not Config.ShowNotification then return end
 
-    if Config.Notification == "esx" then
-        if ESX and ESX.ShowNotification then
+    if Config.Notification == "esx" and ESX and ESX.ShowNotification then
             ESX.ShowNotification(msg)
-        else
-            print("[CK_Panicbutton][Notify] ESX not loaded yet, showing fallback notify")
-            BeginTextCommandThefeedPost("STRING")
-            AddTextComponentSubstringPlayerName(msg)
-            EndTextCommandThefeedPostTicker(false, true)
-        end
     elseif Config.Notification == "custom" then
         print("[Custom Notify] " .. msg) -- Debug-Ausgabe
     else

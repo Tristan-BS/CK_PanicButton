@@ -13,12 +13,11 @@ RegisterNetEvent("CK_PanicButton:server:trigger", function(coords)
     if not job then return end
 
     if not hasValue(Config.AllowedJobs, job) then
-        print(("^3[CK_Panicbutton]^7 %s hat keinen erlaubten Job (%s)"):format(xPlayer.getName(), job))
         return
     end
 
     if Config.RequireItem and not playerHasItem(xPlayer, Config.RequiredItems) then
-        TriggerClientEvent('esx:showNotification', src, "~r~Du hast keinen Panic Button oder das benötigte Item.")
+        TriggerClientEvent('esx:showNotification', src, _U('no_item'))
         return
     end
 
@@ -44,10 +43,10 @@ end
 function playerHasItem(xPlayer, items)
     for _, itemName in ipairs(items) do
         local item = xPlayer.getInventoryItem(itemName)
-        
-        if item and item.count > 0 then
-            return true
+
+        if not item or item.count <= 0 then
+            return false
         end
     end
-    return false
+    return true
 end

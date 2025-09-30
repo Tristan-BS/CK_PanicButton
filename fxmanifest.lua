@@ -22,8 +22,8 @@ server_scripts {
 }
 
 files {
-    '/sounds/panicsound.wav'
+    'html/index.html',
+    'sounds/panicsound.wav'
 }
 
--- Can play sound
-data_file 'AUDIO_WAV' 'sounds/panic.wav'
+ui_page 'html/index.html'

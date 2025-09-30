@@ -48,17 +48,22 @@ RegisterNetEvent("CK_PanicButton:trigger", function()
     local ped = PlayerPedId()
     local coords = GetEntityCoords(ped)
 
-    -- TO IMPLEMENT: Job
-    -- Event to server
     TriggerServerEvent("CK_PanicButton:server:trigger", coords)
 end)
 
 -- If Server sends panic event to everyone
 RegisterNetEvent("CK_PanicButton:client:alert", function(coords, srcName)
-    local message = ("Officer %s pressed his panic button!\n~INPUT_FRONTEND_PAGE_UP~ GPS setzen | ~INPUT_FRONTEND_PAGE_DOWN~ Ablehnen"):format(srcName)
+
+    local message = (_U('panic_triggered')):format(srcName)
     ShowPanicNotification(message)
 
-    -- Warte auf Eingabe für GPS
+    -- Play sound
+    SendNUIMessage({ 
+        action = "playPanicSound",
+        volume = Config.SoundVolume
+    })
+
+    -- wait for GPS input
     CreateThread(function()
         local gpsBlip = nil
         local waited = 0
@@ -78,9 +83,9 @@ RegisterNetEvent("CK_PanicButton:client:alert", function(coords, srcName)
                 SetBlipRoute(gpsBlip, true)
                 SetBlipRouteColour(gpsBlip, Config.Blip.Color)
                 BeginTextCommandSetBlipName("STRING")
-                AddTextComponentString("Panic GPS")
+                AddTextComponentString(U_('blip_name'))
                 EndTextCommandSetBlipName(gpsBlip)
-                ShowPanicNotification("~r~GPS zum Panic-Standort gesetzt!")
+                ShowPanicNotification(_U('gps_set'))
 
                 -- Thread for distance and time check
                 CreateThread(function()
@@ -92,7 +97,7 @@ RegisterNetEvent("CK_PanicButton:client:alert", function(coords, srcName)
 
                         -- Check distance
                         if #(pedCoords - coords) < 25.0 then
-                            ShowPanicNotification("~g~Du hast den Panic-Ort erreicht, GPS entfernt.")
+                            ShowPanicNotification(_U('gps_arrived'))
                             if gpsBlip and DoesBlipExist(gpsBlip) then 
                                 SetBlipRoute(gpsBlip, false)
                                 RemoveBlip(gpsBlip)
@@ -103,7 +108,7 @@ RegisterNetEvent("CK_PanicButton:client:alert", function(coords, srcName)
 
                         -- Zeit abgelaufen
                         if GetGameTimer() - startTime > (Config.Blip.Time * 1000) then
-                            ShowPanicNotification("~y~GPS abgelaufen.")
+                            ShowPanicNotification(_U('gps_expired')))
                             if gpsBlip and DoesBlipExist(gpsBlip) then 
                                 SetBlipRoute(gpsBlip, false)
                                 RemoveBlip(gpsBlip)
@@ -119,7 +124,7 @@ RegisterNetEvent("CK_PanicButton:client:alert", function(coords, srcName)
 
             -- PAGE DOWN = Abbruch
             if IsControlJustPressed(0, declineKey) then
-                ShowPanicNotification("~y~GPS abgelehnt.")
+                ShowPanicNotification(_U('gps_declined'))
                 break
             end
 
@@ -152,5 +157,3 @@ RegisterNetEvent("CK_PanicButton:client:alert", function(coords, srcName)
     RemoveBlip(Blip)
     Blip = nil
 end)
-
-    -- TO IMPLEMENT: Play Sound
