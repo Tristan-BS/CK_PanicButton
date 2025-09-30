@@ -1,17 +1,28 @@
--- Notification helper depending on config
+if ESX == nil then
+    CreateThread(function()
+        while ESX == nil do
+            TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+            Wait(200)
+        end
+    end)
+end
+
+
 function ShowPanicNotification(msg)
     if not Config.ShowNotification then return end
 
     if Config.Notification == "esx" then
-        ESX.ShowNotification(msg)
-
+        if ESX and ESX.ShowNotification then
+            ESX.ShowNotification(msg)
+        else
+            print("[CK_Panicbutton][Notify] ESX not loaded yet, showing fallback notify")
+            BeginTextCommandThefeedPost("STRING")
+            AddTextComponentSubstringPlayerName(msg)
+            EndTextCommandThefeedPostTicker(false, true)
+        end
     elseif Config.Notification == "custom" then
-        -- Call own Notify system
-        -- f.e. exports['my_notify']:SendAlert("error", msg)
-        print("[Custom Notify] Not implemented yet - Implement at client/notify.lua")
-
+        print("[Custom Notify] " .. msg) -- Debug-Ausgabe
     else
-        -- Fallback: GTA Standard Notification
         BeginTextCommandThefeedPost("STRING")
         AddTextComponentSubstringPlayerName(msg)
         EndTextCommandThefeedPostTicker(false, true)

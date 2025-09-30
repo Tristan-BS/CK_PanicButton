@@ -38,7 +38,9 @@ RegisterNetEvent("CK_PanicButton:trigger", function()
     -- Event to server
     TriggerServerEvent("CK_PanicButton:server:trigger", coords)
 
-    print("^1[CK_Panicbutton]^7 Panic triggered at: " .. coords.x .. ", " .. coords.y .. ", " .. coords.z)
+    local msg = ("Panic triggered at: %.2f, %.2f, %.2f"):format(coords.x, coords.y, coords.z)
+    print("^1[CK_Panicbutton]^7 " .. msg)
+    ShowPanicNotification(msg)
 end)
 
 -- If Server sends panic event to everyone
