@@ -12,9 +12,9 @@ function ShowPanicNotification(msg)
     if not Config.ShowNotification then return end
 
     if Config.Notification == "esx" and ESX and ESX.ShowNotification then
-            ESX.ShowNotification(msg)
+        ESX.ShowNotification(msg)
     elseif Config.Notification == "custom" then
-        print("[Custom Notify] " .. msg) -- Debug-Ausgabe
+        print("[Custom Notify] " .. msg) -- Debug-Message
     else
         BeginTextCommandThefeedPost("STRING")
         AddTextComponentSubstringPlayerName(msg)

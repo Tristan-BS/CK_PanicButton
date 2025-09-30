@@ -74,7 +74,7 @@ RegisterNetEvent("CK_PanicButton:client:alert", function(coords, srcName)
         while waited < maxWait do
             Wait(0)
 
-            -- PAGE UP = GPS setzen
+            -- PAGE UP = accept and set GPS
             if IsControlJustPressed(0, acceptKey) then
                 gpsBlip = AddBlipForCoord(coords.x, coords.y, coords.z)
                 SetBlipSprite(gpsBlip, Config.Blip.GPSSprite)
@@ -83,7 +83,7 @@ RegisterNetEvent("CK_PanicButton:client:alert", function(coords, srcName)
                 SetBlipRoute(gpsBlip, true)
                 SetBlipRouteColour(gpsBlip, Config.Blip.Color)
                 BeginTextCommandSetBlipName("STRING")
-                AddTextComponentString(U_('blip_name'))
+                AddTextComponentString(_U('blip_name'))
                 EndTextCommandSetBlipName(gpsBlip)
                 ShowPanicNotification(_U('gps_set'))
 
@@ -106,9 +106,9 @@ RegisterNetEvent("CK_PanicButton:client:alert", function(coords, srcName)
                             break
                         end
 
-                        -- Zeit abgelaufen
+                        -- time expired to accept or decline gps
                         if GetGameTimer() - startTime > (Config.Blip.Time * 1000) then
-                            ShowPanicNotification(_U('gps_expired')))
+                            ShowPanicNotification(_U('gps_expired'))
                             if gpsBlip and DoesBlipExist(gpsBlip) then 
                                 SetBlipRoute(gpsBlip, false)
                                 RemoveBlip(gpsBlip)
@@ -122,7 +122,7 @@ RegisterNetEvent("CK_PanicButton:client:alert", function(coords, srcName)
                 break
             end
 
-            -- PAGE DOWN = Abbruch
+            -- PAGE DOWN = Cancel
             if IsControlJustPressed(0, declineKey) then
                 ShowPanicNotification(_U('gps_declined'))
                 break
