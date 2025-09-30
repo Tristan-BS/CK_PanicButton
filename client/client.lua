@@ -54,7 +54,7 @@ end)
 -- If Server sends panic event to everyone
 RegisterNetEvent("CK_PanicButton:client:alert", function(coords, srcName)
 
-    local message = (_U('panic_triggered')):format(srcName)
+    local message = _U('panic_triggered', srcName)
     ShowPanicNotification(message)
 
     -- Play sound

@@ -7,6 +7,7 @@ version '1.0.0'
 lua54 'yes'
 
 shared_scripts {
+    '@es_extended/locale.lua',
     'locales/de.lua',
     'locales/en.lua',
     'config.lua'
@@ -27,3 +28,5 @@ files {
 }
 
 ui_page 'html/index.html'
+
+dependency 'es_extended'
