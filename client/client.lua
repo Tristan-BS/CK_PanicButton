@@ -48,7 +48,7 @@ RegisterNetEvent("CK_PanicButton:trigger", function()
     local ped = PlayerPedId()
     local coords = GetEntityCoords(ped)
 
-    -- TO IMPLEMENT: Job & Item check
+    -- TO IMPLEMENT: Job
     -- Event to server
     TriggerServerEvent("CK_PanicButton:server:trigger", coords)
 end)
@@ -153,4 +153,4 @@ RegisterNetEvent("CK_PanicButton:client:alert", function(coords, srcName)
     Blip = nil
 end)
 
-    -- TO IMPLEMENT: Play Sound, Set Blip at map, and maybe set gps
+    -- TO IMPLEMENT: Play Sound
