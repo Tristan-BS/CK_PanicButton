@@ -43,7 +43,8 @@ end)
 
 -- If Server sends panic event to everyone
 RegisterNetEvent("CK_PanicButton:client:alert", function(coords, srcName)
-    print("^3[CK_Panicbutton]^7 Panic received from: " .. srcName)
+    local message = ("Officer %s pressed his panic button!"):format(srcName)
+    ShowPanicNotification(message)
 
-    -- TO IMPLEMENT: Play Sound, Set Blip at map, notification and maybe set gps
+    -- TO IMPLEMENT: Play Sound, Set Blip at map, and maybe set gps
 end)

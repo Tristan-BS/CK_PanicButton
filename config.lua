@@ -2,7 +2,7 @@ Config = {}
 
 -- Sound (0.0 min - 1.0 = max)
 Config.SoundVolume = 0.8
-
+Config.Notification = "esx" -- or custom ( CHANGE AT client/notify.lua )
 
 -- Jobs which can use PanicButton
 Config.AllowedJobs = {
