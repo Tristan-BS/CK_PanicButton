@@ -1,4 +1,5 @@
 local ESX = nil
+local lastPanic = {}
 
 -- Get ESX Object
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
@@ -6,6 +7,7 @@ TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 -- Event if someone triggers panic
 RegisterNetEvent("CK_PanicButton:server:trigger", function(coords)
     local src = source
+
     local xPlayer = ESX.GetPlayerFromId(src)
     if not xPlayer then return end
 
@@ -20,6 +22,14 @@ RegisterNetEvent("CK_PanicButton:server:trigger", function(coords)
         TriggerClientEvent('esx:showNotification', src, _U('no_item'))
         return
     end
+
+    local now = os.time()
+    if lastPanic[src] and (now - lastPanic[src]) < Config.PanicCooldown then
+        local remaining = Config.PanicCooldown - (now - lastPanic[src])
+        TriggerClientEvent('esx:showNotification', src, _U("cooldown_active", remaining))
+        return
+    end
+    lastPanic[src] = now
 
     -- If everythings fine -> Trigger to all player panic button
     for _, playerId in pairs(ESX.GetPlayers()) do

@@ -26,6 +26,7 @@ KeyMap = {
 Config.SoundVolume = 0.3
 Config.Notification = 'esx' -- or custom ( CHANGE AT client/notify.lua )
 Config.Locale = 'de' -- de or en
+Config.PanicCooldown = 60 -- Seconds
 
 -- Jobs which can use PanicButton
 Config.AllowedJobs = {
