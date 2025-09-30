@@ -48,5 +48,33 @@ RegisterNetEvent("CK_PanicButton:client:alert", function(coords, srcName)
     local message = ("Officer %s pressed his panic button!"):format(srcName)
     ShowPanicNotification(message)
 
-    -- TO IMPLEMENT: Play Sound, Set Blip at map, and maybe set gps
+    local Blip = AddBlipForRadius(coords.x, coords.y, coords.z, Config.Blip.Radius)
+    SetBlipRoute(Blip, true)
+    
+    CreateThread(function()
+        while Blip do 
+            SetBlipRouteColour(Blip, 1)
+            Wait(Config.Blip.FlashingDuration) 
+            SetBlipRouteColour(Blip, 6)
+            Wait(Config.Blip.FlashingDuration)
+            SetBlipRouteColour(Blip, 35)
+            Wait(Config.Blip.FlashingDuration)
+            SetBlipRouteColour(Blip, 6)
+        end
+    end)
+
+    SetBlipAlpha(Blip, 60)
+    SetBlipColour(Blip, 1)
+    SetBlipFlashes(Blip, true)
+    SetBlipFlashInterval(Blip, 200)
+    BeginTextCommandSetBlipName("STRING")
+    AddTextComponentString(Config.Blipname)
+    EndTextCommandSetBlipName(Blip)
+
+    Wait(Config.BlipTime * 1000) 
+
+    RemoveBlip(Blip)
+    Blip = nil
 end)
+
+    -- TO IMPLEMENT: Play Sound, Set Blip at map, and maybe set gps

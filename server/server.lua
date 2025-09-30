@@ -50,11 +50,11 @@ RegisterNetEvent("CK_PanicButton:server:trigger", function(coords)
         if target and target.job and target.job.name then
             for _, allowed in ipairs(Config.AllowedJobs) do 
                 if target.job.name == allowed then
-                    TriggerClientEvent("CK_Panicbutton:client:alert", playerId, coords, xPlayer.getName())
+                    TriggerClientEvent("CK_PanicButton:client:alert", playerId, coords, xPlayer.getName())
                 end
             end
         end
     end
-    
+
     print(("^1[CK_Panicbutton]^7 %s (%s) hat einen Panic ausgelöst!"):format(xPlayer.getName(), job))
 end)

@@ -24,9 +24,8 @@ Config.RequiredItems = {
 }
 
 Config.Blip = {
-    Sprite = 161,           -- Blip Type
-    Color = 1,              -- Red
-    Scale = 1.2,            -- How big
-    Name = "Panic Button",  -- Name
-    Time = 60               -- Seconds
+    Radius = 140.0,
+    Color = 1,
+    Time = 30,
+    FlashingDuration = 150
 }
