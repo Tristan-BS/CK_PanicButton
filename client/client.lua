@@ -18,10 +18,10 @@ end
 -- Register key press
 if Config.AllowKeyboardTrigger then
     RegisterKeyMapping(
-        "ck_panic",         -- Intern name
-        "CK Panic Button",  -- Description in Keybindings
-        "keyboard",         -- Input device
-        Config.DefaultKey   -- Defaultkey
+        "ck_panic",                 -- Intern name
+        "CK Panic Button",          -- Description in Keybindings
+        "keyboard",                 -- Input device
+        Config.Keys.TriggerPanic    -- Defaultkey
     )
 
     RegisterCommand("ck_panic", function()
@@ -37,19 +37,84 @@ RegisterNetEvent("CK_PanicButton:trigger", function()
     -- TO IMPLEMENT: Job & Item check
     -- Event to server
     TriggerServerEvent("CK_PanicButton:server:trigger", coords)
-
-    local msg = ("Panic triggered at: %.2f, %.2f, %.2f"):format(coords.x, coords.y, coords.z)
-    print("^1[CK_Panicbutton]^7 " .. msg)
-    ShowPanicNotification(msg)
 end)
 
 -- If Server sends panic event to everyone
 RegisterNetEvent("CK_PanicButton:client:alert", function(coords, srcName)
-    local message = ("Officer %s pressed his panic button!"):format(srcName)
+    local message = ("Officer %s pressed his panic button!\n~INPUT_FRONTEND_PAGE_UP~ GPS setzen | ~INPUT_FRONTEND_PAGE_DOWN~ Ablehnen"):format(srcName)
     ShowPanicNotification(message)
 
+    -- Warte auf Eingabe für GPS
+    CreateThread(function()
+        local gpsBlip = nil
+        local waited = 0
+        local maxWait = Config.Blip.AcceptGPSTime * 1000 -- to ms
+        local acceptKey = KeyMap[Config.Keys.AcceptGPS] or 10
+        local declineKey = KeyMap[Config.Keys.DeclineGPS] or 11
+
+        while waited < maxWait do
+            Wait(0)
+
+            -- PAGE UP = GPS setzen
+            if IsControlJustPressed(0, acceptKey) then
+                gpsBlip = AddBlipForCoord(coords.x, coords.y, coords.z)
+                SetBlipSprite(gpsBlip, Config.Blip.GPSSprite)
+                SetBlipScale(gpsBlip, Config.Blip.GPSScale or 0.6)
+                SetBlipColour(gpsBlip, Config.Blip.Color)
+                SetBlipRoute(gpsBlip, true)
+                SetBlipRouteColour(gpsBlip, Config.Blip.Color)
+                BeginTextCommandSetBlipName("STRING")
+                AddTextComponentString("Panic GPS")
+                EndTextCommandSetBlipName(gpsBlip)
+                ShowPanicNotification("~r~GPS zum Panic-Standort gesetzt!")
+
+                -- Thread for distance and time check
+                CreateThread(function()
+                    local startTime = GetGameTimer()
+                    while gpsBlip and DoesBlipExist(gpsBlip) do
+
+                        Wait(1000)
+                        local pedCoords = GetEntityCoords(PlayerPedId())
+
+                        -- Check distance
+                        if #(pedCoords - coords) < 25.0 then
+                            ShowPanicNotification("~g~Du hast den Panic-Ort erreicht, GPS entfernt.")
+                            if gpsBlip and DoesBlipExist(gpsBlip) then 
+                                SetBlipRoute(gpsBlip, false)
+                                RemoveBlip(gpsBlip)
+                                gpsBlip = nil
+                            end
+                            break
+                        end
+
+                        -- Zeit abgelaufen
+                        if GetGameTimer() - startTime > (Config.Blip.Time * 1000) then
+                            ShowPanicNotification("~y~GPS abgelaufen.")
+                            if gpsBlip and DoesBlipExist(gpsBlip) then 
+                                SetBlipRoute(gpsBlip, false)
+                                RemoveBlip(gpsBlip)
+                                gpsBlip = nil
+                            end
+                            break
+                        end
+                    end
+                end)
+
+                break
+            end
+
+            -- PAGE DOWN = Abbruch
+            if IsControlJustPressed(0, declineKey) then
+                ShowPanicNotification("~y~GPS abgelehnt.")
+                break
+            end
+
+            waited = waited + 10
+        end
+    end)
+
+    -- Red Circle Blip on Map
     local Blip = AddBlipForRadius(coords.x, coords.y, coords.z, Config.Blip.Radius)
-    SetBlipRoute(Blip, true)
 
     CreateThread(function()
         while Blip do 
