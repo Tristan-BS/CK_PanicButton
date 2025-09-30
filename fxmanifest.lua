@@ -3,7 +3,7 @@ game 'gta5'
 
 author 'ChichiKugel'
 description 'CK_Panicbutton - Police Panic Button System'
-version '1.0.0'
+version '1.3.7'
 lua54 'yes'
 
 shared_scripts {
