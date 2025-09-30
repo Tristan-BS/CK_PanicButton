@@ -24,8 +24,9 @@ Config.RequiredItems = {
 }
 
 Config.Blip = {
-    Radius = 140.0,
-    Color = 1,
-    Time = 30,
-    FlashingDuration = 150
+    Radius = 140.0,         -- scale
+    Color = 1,              -- red
+    Time = 30,              -- seconds
+    PulseSpeed = 150,       -- ms
+    FlashInterval = 200     -- ms
 }

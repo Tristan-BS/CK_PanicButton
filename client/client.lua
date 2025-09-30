@@ -50,15 +50,15 @@ RegisterNetEvent("CK_PanicButton:client:alert", function(coords, srcName)
 
     local Blip = AddBlipForRadius(coords.x, coords.y, coords.z, Config.Blip.Radius)
     SetBlipRoute(Blip, true)
-    
+
     CreateThread(function()
         while Blip do 
             SetBlipRouteColour(Blip, 1)
-            Wait(Config.Blip.FlashingDuration) 
+            Wait(Config.Blip.PulseSpeed) 
             SetBlipRouteColour(Blip, 6)
-            Wait(Config.Blip.FlashingDuration)
+            Wait(Config.Blip.PulseSpeed)
             SetBlipRouteColour(Blip, 35)
-            Wait(Config.Blip.FlashingDuration)
+            Wait(Config.Blip.PulseSpeed)
             SetBlipRouteColour(Blip, 6)
         end
     end)
@@ -66,12 +66,9 @@ RegisterNetEvent("CK_PanicButton:client:alert", function(coords, srcName)
     SetBlipAlpha(Blip, 60)
     SetBlipColour(Blip, 1)
     SetBlipFlashes(Blip, true)
-    SetBlipFlashInterval(Blip, 200)
-    BeginTextCommandSetBlipName("STRING")
-    AddTextComponentString(Config.Blipname)
-    EndTextCommandSetBlipName(Blip)
+    SetBlipFlashInterval(Blip, Config.Blip.FlashInterval)
 
-    Wait(Config.BlipTime * 1000) 
+    Wait(Config.Blip.Time * 1000) 
 
     RemoveBlip(Blip)
     Blip = nil
