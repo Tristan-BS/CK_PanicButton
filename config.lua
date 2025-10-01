@@ -59,7 +59,8 @@ Config.Blip = {
     GPSSprite = 161,        -- GPS Blip
     GPSScale = 0.4,         -- GPS scale
     AcceptGPSTime = 15,     -- seconds which can a player accept the GPS 
-    Time = 45,              -- seconds
+    Time = 60,              -- seconds
     PulseSpeed = 150,       -- ms
-    FlashInterval = 200     -- ms
+    FlashInterval = 200,    -- ms
+    UpdateInterval = 15     -- seconds -> coords update
 }

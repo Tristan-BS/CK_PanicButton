@@ -39,6 +39,30 @@ RegisterNetEvent("CK_PanicButton:server:trigger", function(coords)
             TriggerClientEvent("CK_PanicButton:client:alert", playerId, coords, xPlayer.getName())
         end
     end
+
+    -- Update Thread for gps
+    CreateThread(function()
+        local panicSource = src
+        local expireTime = os.time() + Config.Blip.Time
+
+        while os.time() < expireTime do
+            Wait(Config.Blip.UpdateInterval * 1000)
+
+            local panicPed = GetPlayerPed(panicSource)
+            if panicPed and DoesEntityExist(panicPed) then
+                local newCoords = GetEntityCoords(panicPed)
+
+                for _, playerId in pairs(ESX.GetPlayers()) do
+                    local target = ESX.GetPlayerFromId(playerId)
+                    if target and hasValue(Config.AllowedJobs, target.job.name) then
+                        TriggerClientEvent("CK_PanicButton:client:updateCoords", playerId, newCoords, panicSource)
+                    end
+                end
+            else
+                break
+            end
+        end
+    end)
 end)
 
 -- Helper classes --
