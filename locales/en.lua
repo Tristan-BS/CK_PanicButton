@@ -6,6 +6,7 @@ Locales['en'] = {
     gps_arrived = "~g~You have reached the panic location, GPS removed.",
     gps_expired = "~y~GPS expired.",
     gps_declined = "~y~GPS declined.",
+    gps_reask = "~b~Panicbutton position updated, accept or decline new GPS?",
     blip_name = "Panicbutton",
     cooldown_active = "The panicbutton is ready in %s seconds"
 }

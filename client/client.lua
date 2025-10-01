@@ -2,6 +2,8 @@ local ESX = nil
 local gpsBlip = nil
 local panicCircle = nil
 local gpsAccepted = false
+local gpsAsked = false
+local firstRequest = true
 
 -- Get ESX object
 CreateThread(function()
@@ -54,6 +56,57 @@ RegisterNetEvent("CK_PanicButton:trigger", function()
     TriggerServerEvent("CK_PanicButton:server:trigger", coords)
 end)
 
+function AskForGPS(coords)
+    if gpsAccepted then return end
+    if gpsAsked then return end
+
+    gpsAsked = true
+
+    if not firstRequest then
+        ShowPanicNotification(_U('gps_reask'))
+    end
+
+    CreateThread(function()
+        local waited = 0
+        local maxWait = Config.Blip.AcceptGPSTime * 1000
+        local acceptKey = KeyMap[Config.Keys.AcceptGPS] or 10
+        local declineKey = KeyMap[Config.Keys.DeclineGPS] or 11
+
+        while waited < maxWait do
+            Wait(0)
+
+            -- Accept GPS
+            if IsControlJustPressed(0, acceptKey) then
+                if gpsBlip and DoesBlipExist(gpsBlip) then RemoveBlip(gpsBlip) end
+                gpsBlip = AddBlipForCoord(coords.x, coords.y, coords.z)
+                SetBlipSprite(gpsBlip, Config.Blip.GPSSprite)
+                SetBlipScale(gpsBlip, Config.Blip.GPSScale or 0.6)
+                SetBlipColour(gpsBlip, Config.Blip.Color)
+                SetBlipRoute(gpsBlip, true)
+                SetBlipRouteColour(gpsBlip, Config.Blip.Color)
+                BeginTextCommandSetBlipName("STRING")
+                AddTextComponentString(_U('blip_name'))
+                EndTextCommandSetBlipName(gpsBlip)
+                ShowPanicNotification(_U('gps_set'))
+                gpsAccepted = true
+                firstRequest = false
+                return
+            end
+
+            -- Decline GPS
+            if IsControlJustPressed(0, declineKey) then
+                ShowPanicNotification(_U('gps_declined'))
+                gpsAccepted = false
+                gpsAsked = false
+                firstRequest = false
+                return
+            end
+
+            waited = waited + 10
+        end
+    end)
+end
+
 -- If Server sends panic event to everyone
 RegisterNetEvent("CK_PanicButton:client:alert", function(coords, srcName)
 
@@ -66,45 +119,9 @@ RegisterNetEvent("CK_PanicButton:client:alert", function(coords, srcName)
         volume = Config.SoundVolume
     })
 
-    -- wait for GPS input
-    CreateThread(function()
-        local waited = 0
-        local maxWait = Config.Blip.AcceptGPSTime * 1000 -- to ms
-        
-        local acceptKey = KeyMap[Config.Keys.AcceptGPS] or 10
-        local declineKey = KeyMap[Config.Keys.DeclineGPS] or 11
-
-        while waited < maxWait do
-            Wait(0)
-
-            -- PAGE UP = accept and set GPS
-            if IsControlJustPressed(0, acceptKey) then
-                if gpsBlip and DoesBlipExist(gpsBlip) then RemoveBlip(gpsBlip) end
-                gpsBlip = AddBlipForCoord(coords.x, coords.y, coords.z)
-
-                SetBlipSprite(gpsBlip, Config.Blip.GPSSprite)
-                SetBlipScale(gpsBlip, Config.Blip.GPSScale or 0.6)
-                SetBlipColour(gpsBlip, Config.Blip.Color)
-                SetBlipRoute(gpsBlip, true)
-                SetBlipRouteColour(gpsBlip, Config.Blip.Color)
-                BeginTextCommandSetBlipName("STRING")
-                AddTextComponentString(_U('blip_name'))
-                EndTextCommandSetBlipName(gpsBlip)
-                ShowPanicNotification(_U('gps_set'))
-                gpsAccepted = true
-                break
-            end
-
-            -- PAGE DOWN = Cancel
-            if IsControlJustPressed(0, declineKey) then
-                ShowPanicNotification(_U('gps_declined'))
-                gpsAccepted = false
-                break
-            end
-
-            waited = waited + 10
-        end
-    end)
+    gpsAsked = false
+    firstRequest = true
+    AskForGPS(coords)
 
     -- Red Circle Blip on Map
 
@@ -142,6 +159,9 @@ RegisterNetEvent("CK_PanicButton:client:alert", function(coords, srcName)
 end)
 
 RegisterNetEvent("CK_PanicButton:client:updateCoords", function(newCoords)
+
+    AskForGPS(newCoords)
+
     -- If accepted -> reroute route xD
     if gpsAccepted and gpsBlip and DoesBlipExist(gpsBlip) then
         SetBlipCoords(gpsBlip, newCoords.x, newCoords.y, newCoords.z)
@@ -162,6 +182,9 @@ RegisterNetEvent("CK_PanicButton:client:updateCoords", function(newCoords)
     -- Delete after new update
     CreateThread(function()
         Wait(Config.Blip.UpdateInterval * 1000)
-        if DoesBlipExist(Blip) then RemoveBlip(Blip) end
+        if panicCircle and DoesBlipExist(panicCircle) then
+            RemoveBlip(panicCircle)
+            panicCircle = nil
+        end
     end)
 end)
