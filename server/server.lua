@@ -45,10 +45,11 @@ RegisterNetEvent("CK_PanicButton:server:trigger", function(coords)
         local panicSource = src
         local expireTime = os.time() + Config.Blip.Time
 
-        while os.time() < expireTime do
+        while os.time() <= expireTime do
             Wait(Config.Blip.UpdateInterval * 1000)
 
             local panicPed = GetPlayerPed(panicSource)
+
             if panicPed and DoesEntityExist(panicPed) then
                 local newCoords = GetEntityCoords(panicPed)
 
